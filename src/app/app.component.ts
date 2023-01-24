@@ -36,28 +36,46 @@ export class AppComponent {
 
   public reponse:string = '';
   public question:number = Math.floor(Math.random() * AppComponent.NOMBRE_MAX);
+  public oldQuestion:number = -1;
   public commentaire: string = 'A toi de jouer !';
 
-  
+  public ngOnInit(): void {
+    this.oldQuestion = this.question;
+  }
 
   public onValider(): void {
     if(this.estLaBonneReponse()) {
-      this.question = Math.floor(Math.random() * AppComponent.NOMBRE_MAX);
-      this.commentaire = 'Bravo ! Encore !'
+      this.commentaire = 'Bravo ! Encore !';
+      this.genererNouvelleQuestion();
       this.reponse ='';
     } else {
-      this.commentaire = 'Raté ! Un autre.';
-      this.question = Math.floor(Math.random() * AppComponent.NOMBRE_MAX);
+      this.commentaire = `Raté ! Tu as dit ${this.reponse} alors que la bonne réponse était ${this.trouverReponse(this.question)}... Un autre.`;
+      this.genererNouvelleQuestion();
       this.reponse ='';
     }
   }
 
   public estLaBonneReponse(): boolean {
-    return AppComponent.TABLE_DE_RAPPEL.some(elt => elt.nombre === this.question && elt.valeur === this.reponse);
+    return AppComponent.TABLE_DE_RAPPEL.some(elt => elt.nombre === this.question && this.formalizeString(elt.valeur) === this.formalizeString(this.reponse));
+  }
+
+  public formalizeString(str: string): string {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
   }
 
   public onChangingReponse(blabla: any){
     this.reponse = blabla.target.value;
+  }
+
+  public trouverReponse(question: number): string | undefined {
+    return AppComponent.TABLE_DE_RAPPEL.find(elt => elt.nombre === question)?.valeur;
+  }
+
+  public genererNouvelleQuestion(): void {
+    this.oldQuestion = this.question;
+    while(this.question === this.oldQuestion){
+      this.question = Math.floor(Math.random() * AppComponent.NOMBRE_MAX);
+    }
   }
 
 }
