@@ -64,11 +64,16 @@
     flex-direction: column;
     align-items: center;
     .score {
-      align-self: flex-end;
       display: flex;
+      align-self: flex-start;
       flex-direction: column;
+      -webkit-animation: 10s linear 0s infinite alternate move_score;
+      animation: 10s linear 0s infinite alternate move_score;
     }
   }
+
+  @-webkit-keyframes move_score { from { margin-left:10%; } to { margin-left:90%; }  }
+  @keyframes move_score { from { margin-left:10%; } to { margin-left:90%; }  }
 
   svg.material-icons {
     height: 24px;
