@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import 'animate.css';
 
 @Component({
@@ -6,7 +7,7 @@ import 'animate.css';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.less']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'table-de-rappel';
 
   public static TABLE_DE_RAPPEL: {nombre: number, valeur: string}[] = [
@@ -102,9 +103,24 @@ export class AppComponent {
   public commentaire: string = 'A toi de jouer !';
   public reussites: number = 0;
   public total: number = 0;
+  public test: any = '';
+
+  constructor(private http: HttpClient) {}
 
   public ngOnInit(): void {
+    this.fetchData();
     this.oldQuestion = this.question;
+  }
+
+  fetchData() {
+    this.http.get('http://localhost:8080/api/hello').subscribe(
+      (data) => {
+        this.test = data;
+      },
+      (error) => {
+        console.error('An error occurred:', error);
+      }
+    );
   }
 
   public onValider(): void {
