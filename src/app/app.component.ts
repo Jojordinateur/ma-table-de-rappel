@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import 'animate.css';
+import { CasierTablePojo } from './models/casier-table-pojo';
 
 @Component({
   selector: 'app-root',
@@ -10,110 +11,27 @@ import 'animate.css';
 export class AppComponent implements OnInit {
   title = 'table-de-rappel';
 
-  public static TABLE_DE_RAPPEL: {nombre: number, valeur: string}[] = [
-    {nombre: 0, valeur: "Toto"},
-    {nombre: 1, valeur: "Flèche"},
-    {nombre: 2, valeur: "Nez"},
-    {nombre: 3, valeur: "Handspinner"},
-    {nombre: 4, valeur: "Rubixcube"},
-    {nombre: 5, valeur: "Cheveux banane"},
-    {nombre: 6, valeur: "Scie"},
-    {nombre: 7, valeur: "Maman"},
-    {nombre: 8, valeur: "Bonbon"},
-    {nombre: 9, valeur: "Papa"},
-    {nombre: 10, valeur: "De"},
-    {nombre: 11, valeur: "Millie Bobbie Brown"},
-    {nombre: 12, valeur: "Louane"},
-    {nombre: 13, valeur: "Mercredi Addams"},
-    {nombre: 14, valeur: "Mme Quinconces"},
-    {nombre: 15, valeur: "Cake"},
-    {nombre: 16, valeur: "Saez"},
-    {nombre: 17, valeur: "Stephanie"},
-    {nombre: 18, valeur: "Napperon"},
-    {nombre: 19, valeur: "Boîte oeufs"},
-    {nombre: 20, valeur: "vin"},
-    {nombre: 21, valeur: "solstice"},
-    {nombre: 22, valeur: "bisou"},
-    {nombre: 23, valeur: "boomrang"},
-    {nombre: 24, valeur: "dordogne"},
-    {nombre: 25, valeur: "noel"},
-    {nombre: 26, valeur: "gaelle"},
-    {nombre: 27, valeur: "tire bouchon"},
-    {nombre: 28, valeur: "huitre"},
-    {nombre: 29, valeur: "Poule"},
-    {nombre: 30, valeur: "gateau d'anniversaire"},
-    {nombre: 31, valeur: "costume"},
-    {nombre: 32, valeur: "galette bretonne"},
-    {nombre: 33, valeur: "bordeaux"},
-    {nombre: 34, valeur: "jesus"},
-    {nombre: 35, valeur: "plateau"},
-    {nombre: 36, valeur: "chandelle"},
-    {nombre: 37, valeur: "rateau tv"},
-    {nombre: 38, valeur: "cornet de glace"},
-    {nombre: 39, valeur: "poulailer"},
-    {nombre: 40, valeur: "voiture"},
-    {nombre: 41, valeur: "bus fantome"},
-    {nombre: 42, valeur: "M patate"},
-    {nombre: 43, valeur: "smart"},
-    {nombre: 44, valeur: "puissance 4"},
-    {nombre: 45, valeur: "clio"},
-    {nombre: 46, valeur: "break"},
-    {nombre: 47, valeur: "sel"},
-    {nombre: 48, valeur: "perle"},
-    {nombre: 49, valeur: "minibus"},
-    {nombre: 50, valeur: "billet"},
-    {nombre: 51, valeur: "jeux de cartes"},
-    {nombre: 52, valeur: "elvis"},
-    {nombre: 53, valeur: "bigoudenne"},
-    {nombre: 54, valeur: "de funes"},
-    {nombre: 55, valeur: "banana split"},
-    {nombre: 56, valeur: "punck"},
-    {nombre: 57, valeur: "coupe afro"},
-    {nombre: 58, valeur: "pimousse"},
-    {nombre: 59, valeur: "coq"},
-    {nombre: 60, valeur: "monocle"},
-    {nombre: 61, valeur: "as"},
-    {nombre: 62, valeur: "jumeaux"},
-    {nombre: 63, valeur: "coloc"},
-    {nombre: 64, valeur: "famille"},
-    {nombre: 65, valeur: "enceinte"},
-    {nombre: 66, valeur: "lucifer"},
-    {nombre: 67, valeur: "chaussette"},
-    {nombre: 68, valeur: "mai"},
-    {nombre: 69, valeur: "kamasutra"},
-    {nombre: 70, valeur: "hippie"},
-    {nombre: 71, valeur: "ferrari"},
-    {nombre: 72, valeur: "gran turismo"},
-    {nombre: 73, valeur: "ordinateur"},
-    {nombre: 74, valeur: "chaise"},
-    {nombre: 75, valeur: "mannequin"},
-    {nombre: 76, valeur: "cidre basque"},
-    {nombre: 77, valeur: "james bond"},
-    {nombre: 78, valeur: "ouioui"},
-    {nombre: 79, valeur: "naissance"},
-    {nombre: 80, valeur: "rosace"},
-   
-  ];
-
-  public static NOMBRE_MAX: number = 80;
-
   public reponse:string = '';
-  public question:number = Math.floor(Math.random() * AppComponent.NOMBRE_MAX);
+  public question = 0;
   public oldQuestion:number = -1;
   public commentaire: string = 'A toi de jouer !';
   public reussites: number = 0;
   public total: number = 0;
   public test: any = '';
+  public tableRappel: CasierTablePojo[] = [];
+  public nombreMax : number = 0;
 
   constructor(private http: HttpClient) {}
 
   public ngOnInit(): void {
     this.fetchData();
-    this.oldQuestion = this.question;
+    this.firstLoad();
+    //this.firstSave();
+    
   }
 
   fetchData() {
-    this.http.get('http://localhost:8080/api/hello').subscribe(
+    this.http.get('http://localhost:8080/api/db').subscribe(
       (data) => {
         this.test = data;
       },
@@ -122,6 +40,31 @@ export class AppComponent implements OnInit {
       }
     );
   }
+
+  firstLoad() {
+    this.http.get<CasierTablePojo[]>('http://localhost:8080/api/getList').subscribe(
+      (data) => {
+        this.tableRappel = data;
+        this.nombreMax = data.length - 1;
+        this.question = Math.floor(Math.random() * this.nombreMax);
+        this.oldQuestion = this.question;
+      },
+      (error) => {
+        console.error('An error occurred:', error);
+      }
+    );
+  }
+
+  /*firstSave() {
+    this.http.post('http://localhost:8080/api/firstsave', AppComponent.TABLE_DE_RAPPEL).subscribe(
+      () => {
+        console.log('is ok');
+      },
+      (error) => {
+        console.error('An error occurred:', error);
+      }
+    );
+  }*/
 
   public onValider(): void {
     this.total++;
@@ -138,7 +81,7 @@ export class AppComponent implements OnInit {
   }
 
   public estLaBonneReponse(): boolean {
-    return AppComponent.TABLE_DE_RAPPEL.some(elt => elt.nombre === this.question && this.formalizeString(elt.valeur) === this.formalizeString(this.reponse));
+    return this.tableRappel.some(elt => elt.numeroCasier === this.question && this.formalizeString(elt.contenuCasier) === this.formalizeString(this.reponse));
   }
 
   public formalizeString(str: string): string {
@@ -150,13 +93,13 @@ export class AppComponent implements OnInit {
   }
 
   public trouverReponse(question: number): string | undefined {
-    return AppComponent.TABLE_DE_RAPPEL.find(elt => elt.nombre === question)?.valeur;
+    return this.tableRappel.find(elt => elt.numeroCasier === question)?.contenuCasier;
   }
 
   public genererNouvelleQuestion(): void {
     this.oldQuestion = this.question;
     while(this.question === this.oldQuestion){
-      this.question = Math.floor(Math.random() * AppComponent.NOMBRE_MAX);
+      this.question = Math.floor(Math.random() * this.nombreMax);
     }
   }
 
