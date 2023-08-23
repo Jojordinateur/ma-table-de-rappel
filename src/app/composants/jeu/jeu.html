@@ -1,0 +1,12 @@
+<div class="content">
+    <h2>{{commentaire}}</h2>
+    <br>
+    <h2>Quel est le nombre {{question}}</h2>
+    <label for="reponse">Réponse :</label>
+    <input type="text" id="reponse" [value]="reponse" (input)="onChangingReponse($event)" (keyup.enter)="onValider()">
+    <br>
+    <button (click)="onValider()" >Valider</button>
+    <br>
+    <div class="score animate__animated animate__bounce"><span>Score :</span><span>{{reussites}}/{{total}}</span></div>
+</div>
+

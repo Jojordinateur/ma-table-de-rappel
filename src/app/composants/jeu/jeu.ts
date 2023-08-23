@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import 'animate.css';
-import { CasierTablePojo } from './models/casier-table-pojo';
+import { CasierTablePojo } from '../../models/casier-table-pojo';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.less']
+  selector: 'jeu',
+  templateUrl: './jeu.html',
+  styleUrls: ['./jeu.less']
 })
-export class AppComponent implements OnInit {
-  title = 'table-de-rappel';
+export class JeuComposant implements OnInit {
 
   public reponse:string = '';
   public question = 0;
@@ -40,17 +39,6 @@ export class AppComponent implements OnInit {
       }
     );
   }
-
-  /*firstSave() {
-    this.http.post('http://localhost:8080/api/firstsave', AppComponent.TABLE_DE_RAPPEL).subscribe(
-      () => {
-        console.log('is ok');
-      },
-      (error) => {
-        console.error('An error occurred:', error);
-      }
-    );
-  }*/
 
   public onValider(): void {
     this.total++;
@@ -88,5 +76,4 @@ export class AppComponent implements OnInit {
       this.question = Math.floor(Math.random() * this.nombreMax);
     }
   }
-
 }
