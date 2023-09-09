@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CasierTablePojo } from '../../models/casier-table-pojo';
 import { TableRappelService } from '../service/table-rappel.service';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'table-rappel',
@@ -20,9 +21,14 @@ import { TableRappelService } from '../service/table-rappel.service';
     }
   
     firstLoad() {
-      this.tableRappelService.getTableRappelMock().subscribe(
+      let $ : Observable<CasierTablePojo[]> = this.tableRappel.length === 0 ? 
+      this.tableRappelService.getTableRappelMock() : this.tableRappelService.getTableDeRappelLocalStorage();
+
+    $.subscribe(
         (data) => {
           this.tableRappel = data;
+          // test
+          this.tableRappelService.storeNewTable(data);
         },
         (error) => {
           console.error('An error occurred:', error);

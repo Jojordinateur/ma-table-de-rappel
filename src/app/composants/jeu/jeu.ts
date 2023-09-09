@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import 'animate.css';
 import { CasierTablePojo } from '../../models/casier-table-pojo';
 import { TableRappelService } from '../service/table-rappel.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'jeu',
@@ -28,9 +29,16 @@ export class JeuComposant implements OnInit {
   }
 
   firstLoad() {
-    this.tableRappelService.getTableRappelMock().subscribe(
+    
+    let $ : Observable<CasierTablePojo[]> = this.tableRappel.length === 0 ? 
+      this.tableRappelService.getTableRappelMock() : this.tableRappelService.getTableDeRappelLocalStorage();
+
+    $.subscribe(
       (data) => {
         this.tableRappel = data;
+        // test
+        this.tableRappelService.storeNewTable(data);
+        //
         this.nombreMax = data.length - 1;
         this.question = Math.floor(Math.random() * this.nombreMax);
         this.oldQuestion = this.question;

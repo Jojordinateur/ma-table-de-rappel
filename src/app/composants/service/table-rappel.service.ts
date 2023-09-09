@@ -10,6 +10,8 @@ import { Observable, of } from 'rxjs';
 
     constructor(private http: HttpClient) {}
 
+    private readonly separateurLigne = '#sl#';
+
     
     public getTableRappelMock(): Observable<CasierTablePojo[]> {
       return of([
@@ -93,12 +95,38 @@ import { Observable, of } from 'rxjs';
         {numeroCasier: 77, contenuCasier: "james bond"},
         {numeroCasier: 78, contenuCasier: "ouioui"},
         {numeroCasier: 79, contenuCasier: "naissance"},
-        {numeroCasier: 80, contenuCasier: "rosace"},
-    
+        {numeroCasier: 80, contenuCasier: "rosace"}
       ]);
     } 
+
+    public getTableDeRappelLocalStorage(): Observable<CasierTablePojo[]> {
+      return of(this.fromStringToTable(localStorage.getItem('table')) ?? []);
+    }
+
+    public storeNewTable(table: CasierTablePojo[]): void {
+      localStorage.setItem('table', this.fromTableToString(table));
+    }
+
+    public fromStringToTable(str: string | null): CasierTablePojo[] | undefined{
+      return str?.split(this.separateurLigne).map(x => this.fromStringToObject(x));
+    }
+
+    public fromTableToString(table: CasierTablePojo[] | null | undefined): string {
+      return table?.map(x => this.fromObjectToString(x)).join(this.separateurLigne) ?? "";
+    }
+
+    public fromObjectToString(casier: CasierTablePojo): string {
+      return `${casier.numeroCasier}${this.separateurObject}${casier.contenuCasier}`
+    }
+
+  private readonly separateurObject = "#so#";
+
+    public fromStringToObject(casier: string): CasierTablePojo {
+      const casierObject : CasierTablePojo = {numeroCasier: parseInt(casier.split(this.separateurObject)[0]), contenuCasier: casier.split(this.separateurObject)[1]}
+      return casierObject;
+    }
   
-    public getTableRappelServeur() {
+    public getTableRappelServeur() : Observable<CasierTablePojo[]>{
       return this.http.get<CasierTablePojo[]>('http://localhost:8080/api/getList');
     }
   }
