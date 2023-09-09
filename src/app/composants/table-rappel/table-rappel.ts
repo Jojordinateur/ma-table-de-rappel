@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CasierTablePojo } from '../../models/casier-table-pojo';
+import { TableRappelService } from '../service/table-rappel.service';
 
 @Component({
     selector: 'table-rappel',
@@ -12,14 +13,14 @@ import { CasierTablePojo } from '../../models/casier-table-pojo';
     public tableRappel: CasierTablePojo[] = [];
 
   
-    constructor(private http: HttpClient) {}
+    constructor(private tableRappelService: TableRappelService) {}
   
     public ngOnInit(): void {
       this.firstLoad();
     }
   
     firstLoad() {
-      this.http.get<CasierTablePojo[]>('http://localhost:8080/api/getList').subscribe(
+      this.tableRappelService.getTableRappelMock().subscribe(
         (data) => {
           this.tableRappel = data;
         },

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import 'animate.css';
 import { CasierTablePojo } from '../../models/casier-table-pojo';
+import { TableRappelService } from '../service/table-rappel.service';
 
 @Component({
   selector: 'jeu',
@@ -20,14 +21,14 @@ export class JeuComposant implements OnInit {
   public tableRappel: CasierTablePojo[] = [];
   public nombreMax : number = 0;
 
-  constructor(private http: HttpClient) {}
+  constructor(private tableRappelService: TableRappelService) {}
 
   public ngOnInit(): void {
     this.firstLoad();
   }
 
   firstLoad() {
-    this.http.get<CasierTablePojo[]>('http://localhost:8080/api/getList').subscribe(
+    this.tableRappelService.getTableRappelMock().subscribe(
       (data) => {
         this.tableRappel = data;
         this.nombreMax = data.length - 1;
